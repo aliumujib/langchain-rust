@@ -82,7 +82,7 @@ pub fn get_language_by_filename(name: &String) -> Language {
         "tsx" => Language::Typescript,
         "go" => Language::Go,
         "py" => Language::Python,
-        _ => panic!("Unsupported language"),
+        _ => Language::Javascript
     }
 }
 

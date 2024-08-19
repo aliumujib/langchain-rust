@@ -16,6 +16,8 @@ pub mod opensearch;
 pub mod qdrant;
 
 mod vectorstore;
+#[cfg(feature = "lancedb")]
+pub mod lancedb;
 
 pub use options::*;
 pub use vectorstore::*;
