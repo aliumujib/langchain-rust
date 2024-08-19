@@ -71,10 +71,15 @@ impl Store {
             .await;
         match tb {
             Ok(table) => {
-                table
-                    .create_index(&["text_embedding"], Index::Auto)
-                    .execute()
-                    .await?
+                let row_count = table.count_rows(None).await?;
+                if row_count > 0 {
+                    table
+                        .create_index(&["text_embedding"], Index::Auto)
+                        .execute()
+                        .await?;
+                } else {
+                    println!("Skipping index creation for empty table");
+                }
             }
             Err(error) => match error {
                 lancedb::Error::TableAlreadyExists { name } => {
@@ -109,7 +114,7 @@ impl Store {
 impl VectorStore for Store {
     async fn add_documents(
         &self,
-        docs: &[crate::schemas::Document],
+        docs: &[Document],
         opt: &crate::vectorstore::VecStoreOptions,
     ) -> Result<Vec<String>, Box<dyn std::error::Error>> {
         let texts: Vec<String> = docs.iter().map(|d| d.page_content.clone()).collect();
